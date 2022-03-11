@@ -1,30 +1,22 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <Alert>
+    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Culpa, id!
+  </Alert>
+  <div class="container mx-auto px-4 md:flex pt-12 justify-center">
+    <router-view />
   </div>
-  <router-view/>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+import Alert from "@/components/Alert.vue";
 
-#nav {
-  padding: 30px;
-}
+@Options({
+  components: {
+    Alert,
+  },
+})
+export default class App extends Vue {}
+</script>
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<style></style>
