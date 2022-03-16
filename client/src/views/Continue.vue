@@ -14,6 +14,7 @@ const store = useStore();
 const github = reactive(store.state.github);
 watch(github, () => {
   if (github.status < 300) {
+    store.dispatch("showAlert", { message: "GitHub Connected sucessfully" });
     router.push({ name: "Repo" });
   }
 });
