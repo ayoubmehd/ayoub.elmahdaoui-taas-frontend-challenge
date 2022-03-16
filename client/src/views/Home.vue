@@ -9,7 +9,6 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { test } from "../api/index";
 import { oauthAuthorizationUrl } from "@octokit/oauth-authorization-url";
 
 @Options({
@@ -18,12 +17,11 @@ import { oauthAuthorizationUrl } from "@octokit/oauth-authorization-url";
 export default class Home extends Vue {
   url = "";
 
-  created() {
+  mounted() {
     const { url, clientId, redirectUrl, login, state } = oauthAuthorizationUrl({
       clientType: "oauth-app",
-      clientId: "c1bdaf5d98a6e734df13",
-      redirectUrl: "http://localhost:8080/continue",
-      login: "octocat",
+      clientId: process.env.VUE_APP_GITHUB_CLIENT_ID,
+      redirectUrl: `${process.env.VUE_APP_URL}/${process.env.VUE_APP_REDIRECT_URI}`,
       scopes: ["repo"],
     });
     this.url = url;
