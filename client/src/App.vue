@@ -7,16 +7,23 @@
 
 <script lang="ts">
 import { useStore } from "vuex";
-import { Options, Vue } from "vue-class-component";
 import Alert from "./components/Alert.vue";
-import { ref } from "@vue/reactivity";
+import { computed, watch } from "vue";
 
-@Options({
+export default {
   components: {
     Alert,
   },
-})
-export default class App extends Vue {}
+  setup() {
+    const store = useStore();
+
+    const token = computed(() => store.state.github.token);
+
+    watch(token, () => {
+      store.dispatch("github/fetchUser");
+    });
+  },
+};
 </script>
 
 <style></style>
