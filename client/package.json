@@ -8,6 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@octokit/core": "^3.5.1",
+    "@octokit/oauth-authorization-url": "^4.3.3",
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",

@@ -1,12 +1,13 @@
-import { createStore } from 'vuex'
+import { createStore } from "vuex";
+import github from "@/store/github.store";
 
 export default createStore({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+  mutations: {},
+  actions: {},
   modules: {
-  }
-})
+    github: {
+      namespaced: true,
+      ...github,
+    },
+  },
+});
