@@ -1,24 +1,23 @@
-const { OAuthApp, createNodeMiddleware } = require("@octokit/oauth-app");
-const {} = require("@octokit/core");
-const { Router } = require("express");
+import express, { json } from "express";
+import { OAuthApp, createNodeMiddleware } from "@octokit/oauth-app";
+import dotenv from "dotenv";
+dotenv.config();
 
-const express = require("express");
+const clientId = process.env.GITHUB_CLIENT_ID;
+const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
-const app = express();
+const expressApp = express();
 
-const ghApp = new OAuthApp({
+// expressApp.use(json());
+
+const octokitApp = new OAuthApp({
   clientType: "oauth-app",
-  clientId: process.env.GITHUB_CLIENT_ID,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  clientId,
+  clientSecret,
 });
 
-ghApp.on("token", async ({ token, octokit }) => {
-  const { data } = await octokit.request("GET /user");
-  console.log(`Token retrieved for ${data.login}`);
+expressApp.use(createNodeMiddleware(octokitApp));
+
+expressApp.listen(process.env.PORT || 3000, () => {
+  console.log(`Example app listening at http://localhost:3000`);
 });
-
-app.get("/gt/auth", (req, res) => {});
-
-app.use("/api", createNodeMiddleware(ghApp));
-
-app.listen(process.env.PORT || 5000);
