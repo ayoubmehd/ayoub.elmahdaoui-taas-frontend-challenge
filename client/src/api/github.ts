@@ -1,4 +1,4 @@
-import { Octokit } from "@octokit/core";
+import { Octokit } from "octokit";
 import type { OctokitResponse } from "@octokit/oauth-app/dist-types/middleware/types";
 
 export interface GitHubResponse {
@@ -44,11 +44,14 @@ export function getUser({
 
 export function getAllRepos({
   token,
-  login,
+  page,
 }: {
   token: string;
-  login: string;
+  page: number;
 }): Promise<OctokitResponse> | undefined | any {
   const octokit = new Octokit({ auth: token });
-  return octokit.request(`GET /users/${login}/repos`);
+  return octokit.request(`GET /user/repos`, {
+    page,
+    per_page: 6,
+  });
 }
