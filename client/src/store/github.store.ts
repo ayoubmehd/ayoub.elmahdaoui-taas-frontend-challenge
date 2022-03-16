@@ -10,6 +10,7 @@ interface GitHubStoreStateType {
   status: number;
   error: any;
   user: { login: string } | null;
+  reposPage: number;
   repos: Repo[];
 }
 
@@ -20,6 +21,7 @@ const store: Module<GitHubStoreStateType, any> = {
     status: 0,
     error: null,
     user: null,
+    reposPage: 1,
     repos: [],
   },
   mutations: {
@@ -38,6 +40,9 @@ const store: Module<GitHubStoreStateType, any> = {
     setRepos(state, payload) {
       state.repos = payload;
     },
+    nextRepoPage(state) {
+      state.reposPage = state.reposPage + 1;
+    },
   },
   actions: {
     async fetchToken({ commit }, { state, code }) {
@@ -54,15 +59,17 @@ const store: Module<GitHubStoreStateType, any> = {
     },
     async fetchUser({ state, commit }) {
       const user = await getUser({ token: state.token });
-      commit("setUser", user);
+      commit("setUser", user.data);
     },
     async fetchRepos({ state, commit }) {
       if (!state.user) return;
+
       const repos = await getAllRepos({
-        login: state.user.login,
         token: state.token,
+        page: state.reposPage,
       });
-      commit("setRepos", repos);
+      commit("setRepos", [...state.repos, ...repos.data]);
+      commit("nextRepoPage");
     },
   },
 };

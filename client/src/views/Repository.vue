@@ -1,16 +1,6 @@
 <template>
   <Sidebar>
-    <NavItem>Link</NavItem>
-    <NavItem>Link</NavItem>
-    <NavItem>Link</NavItem>
-    <NavItem>Link</NavItem>
-    <NavItem>Link</NavItem>
-    <NavItem>Link</NavItem>
-    <NavItem>Link</NavItem>
-    <NavItem>Link</NavItem>
-    <NavItem>Link</NavItem>
-    <NavItem>Link</NavItem>
-    <NavItem>Link</NavItem>
+    <NavItem v-for="repo in repos" :key="repo.node_id">{{ repo.name }}</NavItem>
   </Sidebar>
   <main class="md:w-3/4 mx-2 min-h-full p-4">
     <h1 class="text-3xl font-bold">Repository Name</h1>
@@ -44,24 +34,32 @@
   </main>
 </template>
 
-<script>
-import { Options, Vue } from "vue-class-component";
-import NavItem from "@/components/Sidebar/NavItem.vue";
-import Sidebar from "@/components/Sidebar/Sidebar.vue";
-import Select from "@/components/Form/Select.vue";
-import Commit from "@/components/Commit.vue";
-import Commits from "@/components/Commits.vue";
+<script lang="ts">
+import NavItem from "../components/Sidebar/NavItem.vue";
+import Sidebar from "../components/Sidebar/Sidebar.vue";
+import Select from "../components/Form/Select.vue";
+import Commits from "../components/Commits.vue";
+import { computed, onMounted, watch } from "vue";
+import { useStore } from "vuex";
 
-@Options({
+export default {
   components: {
     NavItem,
     Sidebar,
     Select,
-    Commit,
     Commits,
   },
-})
-export default class Repository extends Vue {}
+  setup() {
+    const store = useStore();
+    const repos = computed(() => store.state.github.repos);
+    const user = computed(() => store.state.github.user);
+    watch(user, () => {
+      store.dispatch("github/fetchRepos");
+    });
+
+    return { repos };
+  },
+};
 </script>
 
 <style></style>
