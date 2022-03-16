@@ -1,0 +1,25 @@
+{
+  "name": "next-media-coding-chalenge",
+  "version": "0.0.1",
+  "main": "server.js",
+  "type": "module",
+  "repository": "git@github.com:ayoubmehd/ayoub.elmahdaoui-taas-frontend-challenge.git",
+  "author": "ayoubmehd <safi-_-gio-raja@live.fr>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "server": "nodemon server.js",
+    "client": "yarn --cwd client serve",
+    "dev": "concurrently \"yarn server\" \"yarn client\""
+  },
+  "dependencies": {
+    "@octokit/core": "^3.5.1",
+    "@octokit/oauth-app": "^3.6.0",
+    "express": "^4.17.3",
+    "octokit": "^1.7.1"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "dotenv": "^16.0.0"
+  }
+}

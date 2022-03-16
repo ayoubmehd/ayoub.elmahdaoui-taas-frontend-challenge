@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white m-2 pb-6 sm:pb-8 lg:pb-12">
+  <div v-if="showAlert" class="bg-white m-2 pb-6 sm:pb-8 lg:pb-12">
     <!-- banner - start -->
     <div
       class="flex flex-wrap sm:flex-nowrap sm:justify-center sm:items-center bg-indigo-500 relative sm:gap-3 px-4 sm:pr-8 ms:px-8 py-3"
@@ -7,20 +7,15 @@
       <div
         class="order-1 sm:order-none w-11/12 sm:w-auto max-w-screen-sm inline-block text-white text-sm md:text-base mb-2 sm:mb-0"
       >
-        <slot></slot>
+        {{ alertMessage }}
       </div>
-
-      <a
-        href="#"
-        class="order-last sm:order-none w-full sm:w-auto inline-block bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 focus-visible:ring ring-indigo-300 text-white text-xs md:text-sm font-semibold text-center whitespace-nowrap rounded-lg outline-none transition duration-100 px-4 py-2"
-        >Learn more</a
-      >
 
       <!-- close button - start -->
       <div
         class="order-2 sm:order-none w-1/12 sm:w-auto flex justify-end items-start sm:absolute sm:right-0 sm:mr-1 xl:mr-3"
       >
         <button
+          @click="hideAlert"
           type="button"
           class="text-white hover:text-indigo-100 active:text-indigo-200 transition duration-100"
         >
@@ -46,10 +41,23 @@
   </div>
 </template>
 
-<script>
-import { Vue } from "vue-class-component";
+<script lang="ts">
+import { computed } from "vue";
+import { useStore } from "vuex";
 
-export default class Alert extends Vue {}
+export default {
+  setup() {
+    const store = useStore();
+
+    function hideAlert() {
+      store.dispatch("hideMessage");
+    }
+
+    const showAlert = computed(() => store.state.showAlert);
+    const alertMessage = computed(() => store.state.alertMessage);
+    return { showAlert, hideAlert, alertMessage };
+  },
+};
 </script>
 
 <style></style>
