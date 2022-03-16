@@ -1,18 +1,20 @@
 import { getToken, getUser, getAllRepos } from "@/api/github";
-import { Octokit } from "octokit";
-import { createStore, StoreOptions } from "vuex";
+import { Module } from "vuex";
 
 interface Repo {
   id: string;
 }
 
-const store: StoreOptions<{
+interface GitHubStoreStateType {
   token: string;
   status: number;
   error: any;
   user: { login: string } | null;
   repos: Repo[];
-}> = {
+}
+
+const store: Module<GitHubStoreStateType, any> = {
+  namespaced: true,
   state: {
     token: "",
     status: 0,
