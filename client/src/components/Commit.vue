@@ -29,10 +29,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const message = computed(() => props.data.message);
-    const avatar = computed(() => props.data.avatar);
-    const user = computed(() => props.data.user);
-    const date = computed(() => props.data.date);
+    const message = computed(() => props?.data?.message);
+    const avatar = computed(() => props?.data?.avatar);
+    const user = computed(() => props?.data?.user);
+    const date = computed(() => props?.data?.date);
 
     return {
       message,
