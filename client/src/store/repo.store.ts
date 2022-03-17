@@ -55,6 +55,9 @@ const store: Module<GitHubStoreStateType, StoreRootState> = {
 
       commit("setCommits", commits.data);
     },
+    clearCommits({ commit }) {
+      commit("setCommits", []);
+    },
   },
 };
 

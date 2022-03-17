@@ -41,6 +41,13 @@ export default createStore<StoreRootState>({
     hideMessage({ commit }) {
       commit("setShowAlert", false);
     },
+    loadToken({ commit }) {
+      const token = localStorage.getItem("token") ?? null;
+
+      if (token) {
+        commit("setToken", token, { root: true });
+      }
+    },
   },
   modules: {
     github,

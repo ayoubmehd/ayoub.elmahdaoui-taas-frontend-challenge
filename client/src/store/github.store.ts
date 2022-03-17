@@ -3,6 +3,8 @@ import { Module } from "vuex";
 
 interface Repo {
   id: string;
+  name: string;
+  default_branch: string;
 }
 
 interface GitHubStoreStateType {
@@ -44,6 +46,7 @@ const store: Module<GitHubStoreStateType, any> = {
 
       if (result) {
         commit("setToken", result.token, { root: true });
+        localStorage.setItem("token", result.token);
         commit("setStatus", result.status);
       }
     },
@@ -60,6 +63,15 @@ const store: Module<GitHubStoreStateType, any> = {
       });
       commit("setRepos", [...state.repos, ...repos.data]);
       commit("nextRepoPage");
+    },
+  },
+  getters: {
+    getRepoMainBranch({ repos }) {
+      return (repoName: string) => {
+        return (
+          repos && repos.find((repo) => repo.name === repoName)?.default_branch
+        );
+      };
     },
   },
 };

@@ -31,10 +31,10 @@
           v-for="commit in commits"
           :key="commit.id"
           :data="{
-            message: commit.commit.message,
-            avatar: commit.author.avatar_url,
-            user: commit.author.login,
-            date: commit.committer.date,
+            message: commit?.commit?.message,
+            avatar: commit?.author?.avatar_url,
+            user: commit?.author?.login,
+            date: commit?.committer?.date,
           }"
         ></Commit>
       </div>
@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { computed, onMounted, watch, ref } from "vue";
+import { computed, onMounted, watch, ref, defineComponent } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 
@@ -52,7 +52,7 @@ import Sidebar from "../components/Sidebar/Sidebar.vue";
 import Select from "../components/Form/Select.vue";
 import Commit from "../components/Commit.vue";
 
-export default {
+export default defineComponent({
   components: {
     NavItem,
     Sidebar,
@@ -67,6 +67,8 @@ export default {
     const branches = computed(() => store.state.repo.branches);
     const repoName = computed(() => route.params.name);
     const selectedBranch = ref(-1);
+
+    const getRepoMainBranch = store.getters["github/getRepoMainBranch"];
 
     const commits = computed(() => {
       return store.state.repo.commits;
@@ -85,6 +87,7 @@ export default {
       }
 
       if (selectedBranch.value === -1) {
+        store.dispatch("clearCommits");
         return;
       }
 
@@ -101,6 +104,8 @@ export default {
     watch(
       () => route.params.name,
       () => {
+        selectedBranch.value = getRepoMainBranch(route.params.name);
+
         getBranches();
         getCommits();
       }
@@ -109,6 +114,7 @@ export default {
     watch(selectedBranch, getCommits);
 
     onMounted(() => {
+      store.dispatch("loadToken");
       store.dispatch("github/fetchRepos");
       getBranches();
     });
@@ -121,7 +127,7 @@ export default {
       commits,
     };
   },
-};
+});
 </script>
 
 <style></style>
