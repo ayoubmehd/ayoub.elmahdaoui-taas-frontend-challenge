@@ -52,7 +52,7 @@ export function getAllRepos({
   const octokit = new Octokit({ auth: token });
   return octokit.request(`GET /user/repos`, {
     page,
-    per_page: 6,
+    per_page: 12,
     direction: "desc",
     type: "owner",
   });

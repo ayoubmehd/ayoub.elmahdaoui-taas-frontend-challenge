@@ -1,6 +1,6 @@
 <template>
   <Alert> </Alert>
-  <div class="container mx-auto px-4 md:flex pt-12 justify-center">
+  <div class="container mx-auto px-4 md:flex pt-8 justify-center">
     <router-view />
   </div>
 </template>

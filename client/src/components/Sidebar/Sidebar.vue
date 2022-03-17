@@ -1,11 +1,11 @@
 <template>
   <aside
-    class="bg-gray-100 shadow-sm rounded sticky max-h-screen overflow-auto top-4 md:w-3/12 mb-auto mx-2"
+    class="bg-gray-100 shadow-sm rounded sticky top-4 md:w-3/12 mb-auto mx-2"
   >
-    <ul class="flex md:flex-col justify-center">
+    <ul class="flex md:flex-col h-screen-70 overflow-auto">
       <slot></slot>
     </ul>
-    <div class="w-full px-5 py-3">
+    <div class="w-full sticky bottom-0 bg-gray-100 px-5 py-3">
       <Button @click="laodMore">Load More</Button>
     </div>
   </aside>
