@@ -6,10 +6,8 @@ interface Repo {
 }
 
 interface GitHubStoreStateType {
-  token: string;
   status: number;
   error: any;
-  user: { login: string } | null;
   reposPage: number;
   repos: Repo[];
 }
@@ -17,25 +15,17 @@ interface GitHubStoreStateType {
 const store: Module<GitHubStoreStateType, any> = {
   namespaced: true,
   state: {
-    token: "",
     status: 0,
     error: null,
-    user: null,
     reposPage: 1,
     repos: [],
   },
   mutations: {
-    setToken(state, payload) {
-      state.token = payload;
-    },
     setStatus(state, payload) {
       state.status = payload;
     },
     setError(state, payload) {
       state.error = payload;
-    },
-    setUser(state, payload) {
-      state.user = payload;
     },
     setRepos(state, payload) {
       state.repos = payload;
@@ -53,19 +43,19 @@ const store: Module<GitHubStoreStateType, any> = {
       }
 
       if (result) {
-        commit("setToken", result.token);
+        commit("setToken", result.token, { root: true });
         commit("setStatus", result.status);
       }
     },
-    async fetchUser({ state, commit }) {
-      const user = await getUser({ token: state.token });
-      commit("setUser", user.data);
+    async fetchUser({ commit, rootState }) {
+      const user = await getUser({ token: rootState.token });
+      commit("setUser", user.data, { root: true });
     },
-    async fetchRepos({ state, commit }) {
-      if (!state.user) return;
+    async fetchRepos({ state, commit, rootState }) {
+      if (!rootState.user) return;
 
       const repos = await getAllRepos({
-        token: state.token,
+        token: rootState.token,
         page: state.reposPage,
       });
       commit("setRepos", [...state.repos, ...repos.data]);

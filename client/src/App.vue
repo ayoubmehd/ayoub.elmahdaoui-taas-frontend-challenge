@@ -17,7 +17,7 @@ export default {
   setup() {
     const store = useStore();
 
-    const token = computed(() => store.state.github.token);
+    const token = computed(() => store.state.token);
 
     watch(token, () => {
       store.dispatch("github/fetchUser");
