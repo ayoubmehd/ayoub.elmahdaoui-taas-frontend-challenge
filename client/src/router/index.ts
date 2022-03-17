@@ -6,6 +6,9 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: Home,
+    meta: {
+      public: true,
+    },
   },
   {
     path: "/about",
@@ -24,6 +27,9 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/continue",
     name: "Continue",
+    meta: {
+      public: true,
+    },
     component: () => import("@/views/Continue.vue"),
   },
 ];
@@ -33,8 +39,23 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  // return next({ name: "Home" });
+router.beforeEach(async (to, from, next) => {
+  if (!to.meta.public) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return next({ name: "Home" });
+    }
+    const res = await fetch("/api/github/oauth/token", {
+      headers: {
+        authorization: `token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.status !== 200) {
+      return next({ name: "Home" });
+    }
+  }
   next();
 });
 
