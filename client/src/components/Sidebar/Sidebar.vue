@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="bg-gray-100 shadow-sm rounded sticky top-4 md:w-1/6 mb-auto mx-2 overflow-auto"
+    class="bg-gray-100 shadow-sm rounded sticky max-h-screen overflow-auto top-4 md:w-3/12 mb-auto mx-2"
   >
     <ul class="flex md:flex-col justify-center">
       <slot></slot>
