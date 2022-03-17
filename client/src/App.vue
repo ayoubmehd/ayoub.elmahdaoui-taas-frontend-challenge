@@ -1,6 +1,7 @@
 <template>
-  <Alert> </Alert>
-  <div class="container mx-auto px-4 md:flex pt-8 justify-center">
+  <Alert></Alert>
+  <Navbar />
+  <div class="container min-h-screen mx-auto px-4 md:flex pt-8 justify-center">
     <router-view />
   </div>
 </template>
@@ -9,10 +10,12 @@
 import { useStore } from "vuex";
 import Alert from "./components/Alert.vue";
 import { computed, watch } from "vue";
+import Navbar from "./components/Navbar.vue";
 
 export default {
   components: {
     Alert,
+    Navbar,
   },
   setup() {
     const store = useStore();

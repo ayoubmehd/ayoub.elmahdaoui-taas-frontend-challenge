@@ -1,10 +1,12 @@
 <template>
-  <a
-    :href="url"
-    class="flex-shrink-0 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg mt-10 sm:mt-0"
-  >
-    Authorize Access to Github
-  </a>
+  <div class="self-center">
+    <a
+      :href="url"
+      class="flex-shrink-0 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg mt-10 sm:mt-0"
+    >
+      Authorize Access to Github
+    </a>
+  </div>
 </template>
 
 <script lang="ts">
