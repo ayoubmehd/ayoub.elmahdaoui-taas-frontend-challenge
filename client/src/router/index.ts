@@ -17,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
   {
-    path: "/repositories/:id?",
+    path: "/repositories/:name?",
     name: "Repo",
     component: () => import("@/views/Repository.vue"),
   },
@@ -31,6 +31,11 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  // return next({ name: "Home" });
+  next();
 });
 
 export default router;
