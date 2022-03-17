@@ -53,5 +53,7 @@ export function getAllRepos({
   return octokit.request(`GET /user/repos`, {
     page,
     per_page: 6,
+    direction: "desc",
+    type: "owner",
   });
 }
