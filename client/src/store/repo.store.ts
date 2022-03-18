@@ -14,6 +14,8 @@ interface Commit {
 interface GitHubStoreStateType {
   branches: Branch[];
   commits: Commit[];
+  page: number;
+  isLoading: boolean;
 }
 
 const store: Module<GitHubStoreStateType, StoreRootState> = {
@@ -21,6 +23,8 @@ const store: Module<GitHubStoreStateType, StoreRootState> = {
   state: {
     branches: [],
     commits: [],
+    page: 1,
+    isLoading: false,
   },
   mutations: {
     setBranches(state, payload) {
@@ -29,34 +33,53 @@ const store: Module<GitHubStoreStateType, StoreRootState> = {
     setCommits(state, payload) {
       state.commits = payload;
     },
+    nextCommitPage(state) {
+      state.page = state.page + 1;
+    },
+    resetCommitPage(state) {
+      state.page = 1;
+    },
+    setLoading(state, payload) {
+      state.isLoading = payload;
+    },
   },
   actions: {
     async fetchBranches({ commit, rootState }, { repoName }) {
-      if (!rootState.user) return;
+      if (!rootState.user) {
+        return;
+      }
 
+      commit("setLoading", true);
       const branches = await getBranches({
         login: rootState.user.login,
         token: rootState.token,
         repoName,
       });
+      commit("setLoading", false);
       commit("setBranches", branches.data);
     },
-    async fetchCommits({ commit, rootState }, { repoName, branch }) {
+    async fetchCommits({ commit, rootState, state }, { repoName, branch }) {
       if (!rootState.user) {
         return;
       }
 
+      commit("setLoading", true);
       const commits = await getCommits({
         login: rootState.user.login,
         repoName,
         token: rootState.token,
         branch,
+        page: state.page,
       });
 
-      commit("setCommits", commits.data);
+      commit("setLoading", false);
+      commit("nextCommitPage");
+
+      commit("setCommits", [...state.commits, ...commits.data]);
     },
     clearCommits({ commit }) {
       commit("setCommits", []);
+      commit("resetCommitPage");
     },
   },
 };

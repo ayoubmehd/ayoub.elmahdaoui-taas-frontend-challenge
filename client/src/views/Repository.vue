@@ -26,10 +26,13 @@
       </div>
     </div>
     <div>
+      <Loading v-if="isLoading" />
       <div class="">
         <Commit
-          v-for="commit in commits"
+          @reach-last-element="getCommits"
+          v-for="(commit, index) in commits"
           :key="commit.id"
+          :shoudObserve="index === commits.length - 1 && commits.length === 12"
           :data="{
             message: commit?.commit?.message,
             avatar: commit?.author?.avatar_url,
@@ -51,6 +54,7 @@ import NavItem from "../components/Sidebar/NavItem.vue";
 import Sidebar from "../components/Sidebar/Sidebar.vue";
 import Select from "../components/Form/Select.vue";
 import Commit from "../components/Commit.vue";
+import Loading from "../components/Loading.vue";
 
 export default defineComponent({
   components: {
@@ -58,14 +62,18 @@ export default defineComponent({
     Sidebar,
     Select,
     Commit,
+    Loading,
   },
   setup() {
     const store = useStore();
     const route = useRoute();
+
     const repos = computed(() => store.state.github.repos);
     const user = computed(() => store.state.user);
     const branches = computed(() => store.state.repo.branches);
     const repoName = computed(() => route.params.name);
+    const isLoading = computed(() => store.state.repo.isLoading);
+
     const selectedBranch = ref(-1);
 
     const getRepoMainBranch = store.getters["github/getRepoMainBranch"];
@@ -74,11 +82,13 @@ export default defineComponent({
       return store.state.repo.commits;
     });
 
-    function getBranches() {
+    async function getBranches() {
       if (!route.params.name) {
         return;
       }
-      store.dispatch("repo/fetchBranches", { repoName: route.params.name });
+      await store.dispatch("repo/fetchBranches", {
+        repoName: route.params.name,
+      });
     }
 
     function getCommits() {
@@ -87,7 +97,7 @@ export default defineComponent({
       }
 
       if (selectedBranch.value === -1) {
-        store.dispatch("clearCommits");
+        store.dispatch("repo/clearCommits");
         return;
       }
 
@@ -104,6 +114,7 @@ export default defineComponent({
     watch(
       () => route.params.name,
       () => {
+        store.dispatch("repo/clearCommits");
         selectedBranch.value = getRepoMainBranch(route.params.name);
 
         getBranches();
@@ -111,12 +122,32 @@ export default defineComponent({
       }
     );
 
-    watch(selectedBranch, getCommits);
+    // watch(commits, () => {
+    //   createObserver();
+    // });
 
+    // onUnmounted(() => {
+    //   if (lastElement) {
+    //     observer.unobserve(lastElement);
+    //   }
+    // });
+
+    watch(selectedBranch, () => {
+      store.dispatch("repo/clearCommits");
+      getCommits();
+    });
+
+    // Hooks
     onMounted(() => {
-      store.dispatch("loadToken");
-      store.dispatch("github/fetchRepos");
-      getBranches();
+      (async () => {
+        store.dispatch("loadToken");
+        await store.dispatch("github/fetchUser");
+
+        await store.dispatch("github/fetchRepos");
+        await getBranches();
+        await getCommits();
+      })();
+      selectedBranch.value = getRepoMainBranch(route.params.name);
     });
 
     return {
@@ -125,6 +156,8 @@ export default defineComponent({
       branches,
       selectedBranch,
       commits,
+      isLoading,
+      getCommits,
     };
   },
 });

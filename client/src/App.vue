@@ -17,15 +17,6 @@ export default {
     Alert,
     Navbar,
   },
-  setup() {
-    const store = useStore();
-
-    const token = computed(() => store.state.token);
-
-    watch(token, () => {
-      store.dispatch("github/fetchUser");
-    });
-  },
 };
 </script>
 

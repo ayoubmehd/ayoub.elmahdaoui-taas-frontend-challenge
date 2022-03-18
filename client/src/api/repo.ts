@@ -1,14 +1,13 @@
 import { Octokit } from "octokit";
 
-export function getBranches({
-  repoName,
-  token,
-  login,
-}: {
+const per_page = 12;
+interface GetBranchesParamsType {
   repoName: string;
   token: string;
   login: string;
-}) {
+}
+
+export function getBranches({ repoName, token, login }: GetBranchesParamsType) {
   const octokit = new Octokit({ auth: token });
 
   return octokit.request("GET /repos/{owner}/{repo}/branches", {
@@ -17,22 +16,28 @@ export function getBranches({
   });
 }
 
+interface GetCommitsParamsType {
+  repoName: string;
+  token: string;
+  login: string;
+  branch: string;
+  page: number;
+}
+
 export function getCommits({
   repoName,
   token,
   login,
   branch,
-}: {
-  repoName: string;
-  token: string;
-  login: string;
-  branch: string;
-}) {
+  page,
+}: GetCommitsParamsType) {
   const octokit = new Octokit({ auth: token });
 
   return octokit.request("GET /repos/{owner}/{repo}/commits", {
     owner: login,
     repo: repoName,
     sha: branch,
+    page,
+    per_page,
   });
 }

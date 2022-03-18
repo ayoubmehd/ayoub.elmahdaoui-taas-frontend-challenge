@@ -18,6 +18,7 @@
     </div>
     <ul class="flex md:flex-col h-screen-70 overflow-auto">
       <slot></slot>
+      <Loading v-if="isLoading" />
     </ul>
     <div class="w-full sticky bottom-0 bg-gray-100 px-5 py-3">
       <Button @click="laodMore">Load More</Button>
@@ -28,15 +29,18 @@
 <script>
 import Button from "../Form/Button.vue";
 import { useStore } from "vuex";
-import { ref, watch } from "@vue/runtime-core";
+import { computed, ref, watch } from "@vue/runtime-core";
+import Loading from "../Loading.vue";
 
 export default {
   components: {
     Button,
+    Loading,
   },
   setup() {
     const store = useStore();
     const search = ref("");
+    const isLoading = computed(() => store.state.github.isLoading);
 
     function searchRepos() {
       store.dispatch("github/searchRepos", { search: search.value });
@@ -48,7 +52,7 @@ export default {
 
     watch(search, searchRepos);
 
-    return { laodMore, search, searchRepos };
+    return { laodMore, search, searchRepos, isLoading };
   },
 };
 </script>
