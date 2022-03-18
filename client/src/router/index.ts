@@ -40,11 +40,19 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+  const token = localStorage.getItem("token");
+
+  // if the route is public and token exist redirect to non public route
+  if (token && to.meta.public) {
+    return next({ name: "Repo" });
+  }
+
   if (!to.meta.public) {
-    const token = localStorage.getItem("token");
     if (!token) {
       return next({ name: "Home" });
     }
+
+    // verify that the stored token is valid
     const res = await fetch("/api/github/oauth/token", {
       headers: {
         authorization: `token ${token}`,
@@ -52,7 +60,9 @@ router.beforeEach(async (to, from, next) => {
       },
     });
 
+    // if token not valid remove it and redirect to home
     if (res.status !== 200) {
+      localStorage.removeItem("token");
       return next({ name: "Home" });
     }
   }
