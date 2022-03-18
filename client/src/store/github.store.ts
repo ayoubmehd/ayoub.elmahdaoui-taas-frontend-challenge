@@ -82,7 +82,7 @@ const store: Module<GitHubStoreStateType, any> = {
 
       commit("setLoading", false);
       commit("setRepos", [...state.repos, ...repos.data]);
-      // commit("nextRepoPage");
+      commit("nextRepoPage");
     },
     async searchRepos({ state, commit, rootState }, { search }) {
       if (!rootState.user) return;
@@ -98,7 +98,7 @@ const store: Module<GitHubStoreStateType, any> = {
 
       commit("setLoading", false);
       commit("setRepos", [...state.repos, ...repos.data.items]);
-      // commit("nextRepoPage");
+      commit("nextRepoPage");
     },
   },
   getters: {
