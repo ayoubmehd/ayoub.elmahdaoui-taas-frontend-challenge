@@ -10,7 +10,8 @@
   "scripts": {
     "server": "nodemon server.js",
     "client": "yarn --cwd client serve",
-    "dev": "concurrently \"yarn server\" \"yarn client\""
+    "dev": "concurrently \"yarn server\" \"yarn client\"",
+    "start": "node server.js"
   },
   "dependencies": {
     "@octokit/core": "^3.5.1",
