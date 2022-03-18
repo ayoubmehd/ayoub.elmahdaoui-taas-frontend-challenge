@@ -1,4 +1,4 @@
-import { getToken, getUser, getAllRepos } from "@/api/github";
+import { getToken, getUser, getAllRepos, searchRepos } from "@/api/github";
 import { Module } from "vuex";
 
 interface Repo {
@@ -32,6 +32,13 @@ const store: Module<GitHubStoreStateType, any> = {
     setRepos(state, payload) {
       state.repos = payload;
     },
+    setReposSearch(state, payload) {
+      state.repos = payload;
+    },
+    clearReposSearch(state) {
+      state.repos = [];
+      state.reposPage = 1;
+    },
     nextRepoPage(state) {
       state.reposPage = state.reposPage + 1;
     },
@@ -62,7 +69,21 @@ const store: Module<GitHubStoreStateType, any> = {
         page: state.reposPage,
       });
       commit("setRepos", [...state.repos, ...repos.data]);
-      commit("nextRepoPage");
+      // commit("nextRepoPage");
+    },
+    async searchRepos({ state, commit, rootState }, { search }) {
+      if (!rootState.user) return;
+
+      commit("clearReposSearch");
+
+      const repos = await searchRepos({
+        token: rootState.token,
+        page: state.reposPage,
+        search,
+      });
+
+      commit("setRepos", [...state.repos, ...repos.data.items]);
+      // commit("nextRepoPage");
     },
   },
   getters: {

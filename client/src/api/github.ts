@@ -1,17 +1,21 @@
 import { Octokit } from "octokit";
 import type { OctokitResponse } from "@octokit/oauth-app/dist-types/middleware/types";
 
+const per_page = 12;
+
 export interface GitHubResponse {
   token: string;
   status: number;
 }
+
+interface GetTokenParamsType {
+  state: string;
+  code: string;
+}
 export async function getToken({
   state,
   code,
-}: {
-  state: string;
-  code: string;
-}): Promise<Array<GitHubResponse | null>> {
+}: GetTokenParamsType): Promise<Array<GitHubResponse | null>> {
   try {
     const response = await fetch("/api/github/oauth/token", {
       method: "POST",
@@ -33,27 +37,48 @@ export async function getToken({
   }
 }
 
+interface GetUserParamsType {
+  token: string;
+}
+
 export function getUser({
   token,
-}: {
-  token: string;
-}): Promise<OctokitResponse> | undefined | any {
+}: GetUserParamsType): Promise<OctokitResponse> | undefined | any {
   const octokit = new Octokit({ auth: token });
   return octokit.request("GET /user");
+}
+
+interface GetAllReposParamsType {
+  token: string;
+  page: number;
 }
 
 export function getAllRepos({
   token,
   page,
-}: {
-  token: string;
-  page: number;
-}): Promise<OctokitResponse> | undefined | any {
+}: GetAllReposParamsType): Promise<OctokitResponse> | undefined | any {
   const octokit = new Octokit({ auth: token });
   return octokit.request(`GET /user/repos`, {
     page,
-    per_page: 12,
+    per_page,
     direction: "desc",
     type: "owner",
+  });
+}
+
+interface SearchReposParamsType {
+  search: string;
+  token: string;
+  page: number;
+}
+
+export function searchRepos({ search, token, page }: SearchReposParamsType) {
+  const octokit = new Octokit({ auth: token });
+  console.log("search", search);
+
+  return octokit.request("GET /search/repositories", {
+    q: `${search}+in:name+user:@me`,
+    page,
+    per_page,
   });
 }
