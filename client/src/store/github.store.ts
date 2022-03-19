@@ -1,68 +1,113 @@
-import { getToken, getUser, getAllRepos } from "@/api/github";
+import { getToken, getUser, getAllRepos, searchRepos } from "@/api/github";
 import { Module } from "vuex";
 
 interface Repo {
   id: string;
+  name: string;
+  default_branch: string;
 }
 
 interface GitHubStoreStateType {
-  token: string;
   status: number;
   error: any;
-  user: { login: string } | null;
+  reposPage: number;
   repos: Repo[];
+  isLoading: boolean;
 }
 
 const store: Module<GitHubStoreStateType, any> = {
   namespaced: true,
   state: {
-    token: "",
     status: 0,
     error: null,
-    user: null,
+    reposPage: 1,
     repos: [],
+    isLoading: false,
   },
   mutations: {
-    setToken(state, payload) {
-      state.token = payload;
-    },
     setStatus(state, payload) {
       state.status = payload;
     },
     setError(state, payload) {
       state.error = payload;
     },
-    setUser(state, payload) {
-      state.user = payload;
-    },
     setRepos(state, payload) {
       state.repos = payload;
+    },
+    setReposSearch(state, payload) {
+      state.repos = payload;
+    },
+    clearReposSearch(state) {
+      state.repos = [];
+      state.reposPage = 1;
+    },
+    nextRepoPage(state) {
+      state.reposPage = state.reposPage + 1;
+    },
+    setLoading(state, payload) {
+      state.isLoading = payload;
     },
   },
   actions: {
     async fetchToken({ commit }, { state, code }) {
+      commit("setLoading", true);
       const [err, result] = await getToken({ state, code });
 
+      commit("setLoading", false);
       if (err) {
         return commit("setError", err);
       }
 
       if (result) {
-        commit("setToken", result.token);
+        commit("setToken", result.token, { root: true });
+        localStorage.setItem("token", result.token);
         commit("setStatus", result.status);
       }
     },
-    async fetchUser({ state, commit }) {
-      const user = await getUser({ token: state.token });
-      commit("setUser", user);
+    async fetchUser({ commit, rootState }) {
+      commit("setLoading", true);
+      const user = await getUser({ token: rootState.token });
+
+      commit("setLoading", false);
+      commit("setUser", user.data, { root: true });
     },
-    async fetchRepos({ state, commit }) {
-      if (!state.user) return;
+    async fetchRepos({ state, commit, rootState }) {
+      if (!rootState.user) return;
+
+      commit("setLoading", true);
       const repos = await getAllRepos({
-        login: state.user.login,
-        token: state.token,
+        token: rootState.token,
+        page: state.reposPage,
       });
-      commit("setRepos", repos);
+
+      commit("setLoading", false);
+      commit("setRepos", [...state.repos, ...repos.data]);
+      commit("nextRepoPage");
+    },
+    async searchRepos({ state, commit, rootState }, { search }) {
+      if (!rootState.user) return;
+
+      commit("clearReposSearch");
+
+      commit("setLoading", true);
+      const repos = await searchRepos({
+        token: rootState.token,
+        page: state.reposPage,
+        search,
+      });
+
+      commit("setLoading", false);
+      commit("setRepos", [...state.repos, ...repos.data.items]);
+      commit("nextRepoPage");
+    },
+  },
+  getters: {
+    getRepoMainBranch({ repos }) {
+      return (repoName: string) => {
+        return (
+          repos && repos.find((repo) => repo.name === repoName)?.default_branch
+        );
+      };
     },
   },
 };

@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Commit from "@/components/Commit.vue";
+import Commit from "./Commit.vue";
 
 @Options({
   components: {

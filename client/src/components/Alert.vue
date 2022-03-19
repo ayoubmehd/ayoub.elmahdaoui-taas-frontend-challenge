@@ -1,5 +1,8 @@
 <template>
-  <div v-if="showAlert" class="bg-white m-2 pb-6 sm:pb-8 lg:pb-12">
+  <div
+    v-if="showAlert"
+    class="w-1/2 fixed left-1/2 transform -translate-x-1/2 bottom-2 z-50 px-1"
+  >
     <!-- banner - start -->
     <div
       class="flex flex-wrap sm:flex-nowrap sm:justify-center sm:items-center bg-indigo-500 relative sm:gap-3 px-4 sm:pr-8 ms:px-8 py-3"

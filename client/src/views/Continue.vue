@@ -18,10 +18,11 @@ watch(github, () => {
     router.push({ name: "Repo" });
   }
 });
-onMounted(() => {
+onMounted(async () => {
   const { state, code } = route.query;
 
-  store.dispatch("github/fetchToken", { state, code });
+  await store.dispatch("github/fetchToken", { state, code });
+  router.push({ name: "Repo" });
 });
 </script>
 
