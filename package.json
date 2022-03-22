@@ -12,8 +12,8 @@
     "client": "yarn --cwd client serve",
     "build:client": "yarn --cwd client build",
     "dev": "concurrently \"yarn server\" \"yarn client\"",
-    "prebuild": "yarn --cwd client",
-    "build": "yarn build:client && yarn",
+    "preinstall": "yarn --cwd client install",
+    "build": "yarn build:client",
     "start": "node server.js"
   },
   "dependencies": {
