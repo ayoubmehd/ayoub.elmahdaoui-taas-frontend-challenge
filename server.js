@@ -10,12 +10,6 @@ const expressApp = express();
 
 // expressApp.use(json());
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(__dirname + "/public/"));
-
-  app.get(/.*/, (req, res) => res.sendFile(__dirname + "/public/index.html"));
-}
-
 const octokitApp = new OAuthApp({
   clientType: "oauth-app",
   clientId,
@@ -24,6 +18,11 @@ const octokitApp = new OAuthApp({
 
 expressApp.use(createNodeMiddleware(octokitApp));
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(__dirname + "/public/"));
+
+  app.get(/.*/, (req, res) => res.sendFile(__dirname + "/public/index.html"));
+}
 expressApp.listen(process.env.PORT || 3000, () => {
   console.log(`Example app listening at http://localhost:3000`);
 });
