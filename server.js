@@ -10,6 +10,12 @@ const expressApp = express();
 
 // expressApp.use(json());
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(__dirname + "/public/"));
+
+  app.get(/.*/, (req, res) => res.sendFile(__dirname + "/public/index.html"));
+}
+
 const octokitApp = new OAuthApp({
   clientType: "oauth-app",
   clientId,
