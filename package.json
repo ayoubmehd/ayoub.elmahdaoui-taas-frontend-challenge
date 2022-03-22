@@ -10,8 +10,9 @@
   "scripts": {
     "server": "nodemon server.js",
     "client": "yarn --cwd client serve",
-    "build:client": "yarn && yarn --cwd client build",
+    "build:client": "yarn --cwd client build",
     "dev": "concurrently \"yarn server\" \"yarn client\"",
+    "prebuild": "yarn --cwd client",
     "build": "yarn build:client && yarn",
     "start": "node server.js"
   },
