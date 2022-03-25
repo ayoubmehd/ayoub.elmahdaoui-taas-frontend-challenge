@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -15,6 +15,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "next-media-codeing-challenge" #Must be unique in Heroku
           heroku_email: "sssayoun2@gmail.com"
+          branch: "main"
       - name: install dependencies
         run: yarn
         id: install-dependencies
