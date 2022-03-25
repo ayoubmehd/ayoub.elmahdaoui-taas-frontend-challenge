@@ -7,6 +7,9 @@
   "author": "ayoubmehd <safi-_-gio-raja@live.fr>",
   "license": "MIT",
   "private": false,
+  "engines": {
+    "node": "16.13.2"
+  },
   "scripts": {
     "server": "nodemon server.js",
     "client": "yarn --cwd client serve",
