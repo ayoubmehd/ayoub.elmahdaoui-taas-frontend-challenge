@@ -6,7 +6,7 @@
   "repository": "git@github.com:ayoubmehd/ayoub.elmahdaoui-taas-frontend-challenge.git",
   "author": "ayoubmehd <safi-_-gio-raja@live.fr>",
   "license": "MIT",
-  "private": false,
+  "private": true,
   "engines": {
     "node": "16.13.2"
   },
