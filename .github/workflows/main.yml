@@ -16,7 +16,7 @@ jobs:
           heroku_app_name: "next-media-codeing-challenge" #Must be unique in Heroku
           heroku_email: "sssayoun2@gmail.com"
           branch: "main"
-      - name: install dependencies
+      - name: install dependencies 
         run: yarn
         id: install-dependencies
       - name: build client code
